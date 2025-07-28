@@ -68,6 +68,19 @@ def update_content(
         raise HTTPException(status_code=404, detail="Content not found")
     return updated_content
 
+@router.patch("/content/{content_id}", response_model=ContentResponse)
+def patch_content(
+    content_id: int,
+    content_update: ContentUpdate,
+    db: Session = Depends(get_db)
+):
+    """Partially update existing content (same as PUT for this implementation)."""
+    service = ContentService(db)
+    updated_content = service.update_content(content_id, content_update)
+    if not updated_content:
+        raise HTTPException(status_code=404, detail="Content not found")
+    return updated_content
+
 @router.delete("/content/{content_id}")
 def delete_content(content_id: int, db: Session = Depends(get_db)):
     """Delete content from watchlist."""

@@ -27,6 +27,16 @@ def get_recommendations(
         exclude_watched=request.exclude_watched
     )
 
+@router.post("/ai/recommendations")
+def get_recommendations_simple(
+    request: dict,
+    db: Session = Depends(get_db)
+):
+    """Get AI-powered content recommendations (simple endpoint for frontend)."""
+    service = AIService(db)
+    recommendations = service.get_recommendations_simple(request.get("user_preferences", ""))
+    return {"recommendations": recommendations}
+
 @router.post("/ai/analyze", response_model=AnalysisResponse)
 def analyze_viewing_patterns(
     request: AnalysisRequest,
