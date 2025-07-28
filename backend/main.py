@@ -6,6 +6,7 @@ import uvicorn
 
 from app.database import SessionLocal, engine, init_db
 from app.models import content as content_models
+from app.models import watches as watch_models  
 from app.routes import content, watches, ai, stats
 from app.config import settings
 
@@ -34,6 +35,11 @@ app.include_router(content.router, prefix="/api/v1", tags=["content"])
 app.include_router(watches.router, prefix="/api/v1", tags=["watches"])
 app.include_router(ai.router, prefix="/api/v1", tags=["ai"])
 app.include_router(stats.router, prefix="/api/v1", tags=["statistics"])
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for monitoring."""
+    return {"status": "healthy", "message": "Watchlist Manager API is running"}
 
 @app.get("/")
 async def root():
