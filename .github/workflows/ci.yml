@@ -49,22 +49,10 @@ jobs:
       with:
         node-version: '18'
     
-    - name: Debug - Check frontend structure
-      run: |
-        ls -la
-        ls -la frontend/
-        cat frontend/package.json | head -20
-    
     - name: Install dependencies
       run: |
         cd frontend
         npm install
-    
-    - name: Debug - Check node_modules
-      run: |
-        cd frontend
-        ls -la node_modules/ | head -10
-        npm list --depth=0 || true
     
     - name: Build application
       env:
