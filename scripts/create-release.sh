@@ -2,6 +2,8 @@
 
 # GitHub Release Script
 # Automates the process of creating a new release
+#
+# Usage: ./scripts/create-release.sh
 
 set -e
 
@@ -56,8 +58,6 @@ echo "🌐 Check GitHub for the new release: https://github.com/rxl895/watchlist
 # Optional: Create GitHub release using gh CLI if available
 if command -v gh &> /dev/null; then
     echo "📦 Creating GitHub release..."
-    echo "$release_notes" | gh release create "v$new_version" --title "Release v$new_version" --notes-file -
+    gh release create "v$new_version" --title "Release v$new_version" --notes "$release_notes"
     echo "✅ GitHub release created!"
-else
-    echo "💡 Install GitHub CLI (gh) to automatically create GitHub releases"
 fi

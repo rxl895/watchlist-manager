@@ -1,54 +1,89 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { Toaster } from 'react-hot-toast';
-import { ThemeProvider } from 'styled-components';
-import { GlobalStyles, theme } from './styles/GlobalStyles';
-import Header from './components/Layout/Header';
-import Sidebar from './components/Layout/Sidebar';
-import Dashboard from './pages/Dashboard';
-import Watchlist from './pages/Watchlist';
-import Analytics from './pages/Analytics';
-import Recommendations from './pages/Recommendations';
-import Search from './pages/Search';
-import ContentDetail from './pages/ContentDetail';
-import { Layout, MainContent } from './styles/LayoutStyles';
+import React, { useState, useEffect } from 'react';
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+interface ContentItem {
+  id: number;
+  title: string;
+  content_type: string;
+  status: string;
+  tmdb_rating?: number;
+}
 
 function App() {
+  const [content, setContent] = useState<ContentItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Fetch content from backend
+    fetch('http://localhost:8000/api/v1/content/')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch content');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setContent(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyles />
-        <Router>
-          <Layout>
-            <Header />
-            <div style={{ display: 'flex', flex: 1 }}>
-              <Sidebar />
-              <MainContent>
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/watchlist" element={<Watchlist />} />
-                  <Route path="/analytics" element={<Analytics />} />
-                  <Route path="/recommendations" element={<Recommendations />} />
-                  <Route path="/search" element={<Search />} />
-                  <Route path="/content/:id" element={<ContentDetail />} />
-                </Routes>
-              </MainContent>
+    <div className="App">
+      <header className="header">
+        <div className="container">
+          <h1>🎬 Watchlist Manager</h1>
+        </div>
+      </header>
+      
+      <main className="main-content">
+        <div className="container">
+          {loading && <div className="loading">Loading your watchlist...</div>}
+          
+          {error && (
+            <div className="error">
+              Error: {error}
+              <br />
+              <small>Make sure the backend server is running on http://localhost:8000</small>
             </div>
-          </Layout>
-        </Router>
-        <Toaster position="top-right" />
-      </ThemeProvider>
-    </QueryClientProvider>
+          )}
+          
+          {!loading && !error && (
+            <div>
+              <h2>Your Content ({content.length} items)</h2>
+              {content.length === 0 ? (
+                <p>No content yet. Start by adding your first movie or TV show!</p>
+              ) : (
+                <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+                  {content.map(item => (
+                    <div key={item.id} style={{ 
+                      background: '#2a2a2a', 
+                      padding: '1rem', 
+                      borderRadius: '8px',
+                      border: '1px solid #444'
+                    }}>
+                      <h3 style={{ margin: '0 0 0.5rem 0', color: '#fff' }}>{item.title}</h3>
+                      <p style={{ margin: '0.25rem 0', color: '#ccc' }}>
+                        Type: {item.content_type} | Status: {item.status}
+                      </p>
+                      {item.tmdb_rating && (
+                        <p style={{ margin: '0.25rem 0', color: '#ffd700' }}>
+                          ⭐ {item.tmdb_rating}/10
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
   );
 }
 

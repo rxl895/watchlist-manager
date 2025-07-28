@@ -71,7 +71,7 @@ else
 fi
 
 # Check if in project directory
-if [ -f "README.md" ] && [ -f "package.json" ]; then
+if [ -f "README.md" ] && [ -f "frontend/package.json" ]; then
     echo "✅ In correct project directory"
 else
     echo "❌ Not in project root directory"

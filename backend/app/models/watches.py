@@ -1,7 +1,26 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, Float, Boolean, ForeignKey
+import enum
+from sqlalchemy import Column, Integer, String, DateTime, Text, Float, ForeignKey, Enum
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from ..database import Base
+
+class WatchLocation(str, enum.Enum):
+    HOME = "home"
+    THEATER = "theater"
+    MOBILE = "mobile"
+    OTHER = "other"
+
+class DeviceType(str, enum.Enum):
+    MOBILE = "mobile"
+    DESKTOP = "desktop"
+    TV = "tv"
+    TABLET = "tablet"
+
+class VideoQuality(str, enum.Enum):
+    SD = "480p"
+    HD = "720p"
+    FHD = "1080p"
+    UHD = "4K"
 
 class Watch(Base):
     """Model for tracking when content was watched."""
@@ -24,7 +43,7 @@ class Watch(Base):
     completion_percentage = Column(Float, default=100.0)  # 0-100
     
     # Context and mood
-    watch_location = Column(String)  # "home", "theater", "mobile", etc.
+    watch_location = Column(Enum(WatchLocation))  # "home", "theater", "mobile", etc.
     watch_mood = Column(String)      # "relaxed", "excited", "bored", etc.
     companions = Column(Text)        # Who watched with you
     
@@ -53,11 +72,11 @@ class WatchSession(Base):
     end_position = Column(Float)                   # Ending position (0-100%)
     
     # Device and platform
-    device_type = Column(String)                   # "mobile", "desktop", "tv", "tablet"
+    device_type = Column(Enum(DeviceType))         # "mobile", "desktop", "tv", "tablet"
     platform_id = Column(Integer, ForeignKey("platforms.id"))
     
     # Session quality
-    quality = Column(String)                       # "480p", "720p", "1080p", "4K"
+    quality = Column(Enum(VideoQuality))           # "480p", "720p", "1080p", "4K"
     audio_language = Column(String)
     subtitle_language = Column(String)
     
