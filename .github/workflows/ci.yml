@@ -49,13 +49,27 @@ jobs:
       with:
         node-version: '18'
     
-    - name: Clean and install dependencies
+    - name: Debug - Check frontend structure
+      run: |
+        ls -la
+        ls -la frontend/
+        cat frontend/package.json | head -20
+    
+    - name: Install dependencies
       run: |
         cd frontend
-        rm -rf node_modules
         npm install
     
+    - name: Debug - Check node_modules
+      run: |
+        cd frontend
+        ls -la node_modules/ | head -10
+        npm list --depth=0 || true
+    
     - name: Build application
+      env:
+        CI: false
+        NODE_OPTIONS: "--max_old_space_size=4096"
       run: |
         cd frontend
         npm run build
