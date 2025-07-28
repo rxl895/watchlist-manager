@@ -36,44 +36,149 @@ A modern, AI-powered watchlist manager that helps you track movies and TV series
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.9 or higher
-- Node.js 16+ and npm
-- Docker (optional)
+- **Python 3.9+** - [Download here](https://www.python.org/downloads/)
+- **Node.js 16+** and **npm** - [Download here](https://nodejs.org/)
+- **Git** - [Download here](https://git-scm.com/)
 
-### Installation
+### 🔥 Run Locally (Step-by-Step)
 
-#### Option 1: Local Development
+#### 1️⃣ Clone the Repository
 ```bash
-# Clone the repository
 git clone https://github.com/rxl895/watchlist-manager.git
 cd watchlist-manager
+```
 
-# Backend setup
+#### 2️⃣ Setup Backend (FastAPI)
+```bash
+# Navigate to backend directory
 cd backend
+
+# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Activate virtual environment
+# On macOS/Linux:
+source venv/bin/activate
+# On Windows:
+# venv\Scripts\activate
+
+# Install Python dependencies
 pip install -r requirements.txt
 
-# Frontend setup
-cd ../frontend
+# Start the backend server
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+**✅ Backend will be running at:** http://localhost:8000
+- **API Docs:** http://localhost:8000/docs
+- **Health Check:** http://localhost:8000/health
+
+#### 3️⃣ Setup Frontend (React) - In New Terminal
+```bash
+# Open new terminal and navigate to frontend
+cd watchlist-manager/frontend
+
+# Install Node.js dependencies
 npm install
 
-# Start the application
-# Terminal 1 - Backend
-cd backend
-uvicorn main:app --reload
-
-# Terminal 2 - Frontend
-cd frontend
+# Start the React development server
 npm start
 ```
 
-#### Option 2: Docker
+**✅ Frontend will be running at:** http://localhost:3000
+
+#### 4️⃣ Open Your Browser
+Visit **http://localhost:3000** to see your Watchlist Manager! 🎉
+
+### 🐳 Alternative: Docker Setup (One Command)
 ```bash
 git clone https://github.com/rxl895/watchlist-manager.git
 cd watchlist-manager
 docker-compose up -d
 ```
+
+Then visit: http://localhost:3000
+
+### 🛠️ Development Commands
+
+#### Backend Commands
+```bash
+cd backend
+source venv/bin/activate  # Activate virtual environment
+
+# Start development server
+uvicorn main:app --reload
+
+# Run tests
+pytest tests/ -v
+
+# View API documentation
+# http://localhost:8000/docs
+```
+
+#### Frontend Commands
+```bash
+cd frontend
+
+# Start development server
+npm start
+
+# Build for production
+npm run build
+
+# Run tests
+npm test
+
+# Install new packages
+npm install <package-name>
+```
+
+### 🎯 What You Can Do
+
+Once both servers are running, you can:
+
+1. **📚 View Your Watchlist** - See movies and TV shows you've added
+2. **➕ Add New Content** - Use the "Add Content" tab to add movies/shows
+3. **🔄 Update Status** - Change status from "Planned" to "Watching" to "Completed"
+4. **🤖 Get AI Recommendations** - Click "AI Recommendations" for personalized suggestions
+5. **📊 View Statistics** - See your viewing analytics in the "Statistics" tab
+6. **🗑️ Delete Items** - Remove content you no longer want to track
+
+### 🔧 Troubleshooting
+
+#### Common Issues:
+
+**Backend won't start:**
+```bash
+# Make sure virtual environment is activated
+source venv/bin/activate
+
+# Reinstall dependencies
+pip install -r requirements.txt
+```
+
+**Frontend won't start:**
+```bash
+# Clear npm cache
+npm cache clean --force
+
+# Delete node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
+
+**Port already in use:**
+```bash
+# Kill process on port 8000 (backend)
+lsof -ti:8000 | xargs kill -9
+
+# Kill process on port 3000 (frontend) 
+lsof -ti:3000 | xargs kill -9
+```
+
+**CORS errors:**
+- Make sure backend is running on port 8000
+- Make sure frontend is running on port 3000
 
 ## 📖 API Documentation
 
